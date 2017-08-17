@@ -1,0 +1,14 @@
+<ion-view title="Sync Demo">
+    <ion-content padding="'true'" class="has-header">
+        <ion-list ng-repeat="item in list" can-swipe="true">
+            <ion-item menu-close="" href="#!/tabs/detail/{{item.id}}">
+                {{item.data.name}}
+                <p>{{item.id}}</p>
+                <span class="item-note">{{item.moment}}</span>
+                <ion-option-button class="button-dark" ng-click="delete(item)">
+                       Delete
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

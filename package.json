@@ -1,0 +1,45 @@
+{
+  "name": "sync-cordova-app",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "~1.6.2",
+    "angular-animate": "~1.6.2",
+    "angular-sanitize": "~1.6.2",
+    "angular-ui-router": "~0.2.18",
+    "browserify": "~13.3.0",
+    "browserify-shim": "~3.8.12",
+    "cordova-plugin-whitelist": "https://github.com/apache/cordova-plugin-whitelist",
+    "fh-js-sdk": "~2.19.0",
+    "fh-sync-js": "^1.1.1",
+    "grunt": "~0.4.4",
+    "grunt-browserify": "~5.0.0",
+    "grunt-cli": "~1.2.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-connect": "~0.7.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-newer": "~0.5.4",
+    "grunt-rev": "~0.1.0",
+    "ionic-scripts": "1.3.2",
+    "load-grunt-tasks": "~0.2.0",
+    "moment": "2.14.1",
+    "time-grunt": "~0.2.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "scripts": {
+    "install": "./node_modules/grunt-cli/bin/grunt browserify"
+  },
+  "license": "mit",
+  "cordova": {
+    "platforms": [
+      "android",
+      "ios"
+    ],
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    }
+  }
+}
