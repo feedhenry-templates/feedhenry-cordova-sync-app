@@ -7,7 +7,6 @@ require("ionic-scripts");
 require("angular-sanitize");
 
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services'])
-.constant('$fh', require("fh-js-sdk"))
 .constant('fhSync', require('fh-sync-js'))
 .constant('fhSyncConfig', require('../../sync-config.json'))
 .constant('moment', require("moment"))
