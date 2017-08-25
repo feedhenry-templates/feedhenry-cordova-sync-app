@@ -1,0 +1,11 @@
+<ion-view title="{{title}}">
+  <ion-content padding="'true'" class="has-header">
+    <ion-list ng-repeat="(key, value) in profile">
+      <ion-item>
+        <h2>{{key}}</h2>
+        {{value}}
+      </ion-item>
+    </ion-list>
+    <a ng-click="logout()" class="button button-block">Logout</a>
+  </ion-content>
+</ion-view>
