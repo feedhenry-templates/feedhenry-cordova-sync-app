@@ -1,7 +1,15 @@
 var fhSync = require('fh-sync-js');
-var cloudHandlerUtil = require('./keycloak/cloud-handler-util');
+var createCloudHandler = require('./keycloak/cloud-handler');
 var keycloak = require('keycloak-js')(require('../../config/keycloak-config.json'));
 var syncConfig = require('../../config/sync-config.json');
+
+var angular = require("angular");
+require("angular-animate");
+require("angular-ui-router");
+require("ionic-scripts");
+require("angular-sanitize");
+
+$http = angular.injector(["ng"]).get("$http");
 
 /**
  * We need to ensure that, if running on a device, the 'deviceready' event has
@@ -28,10 +36,9 @@ function onDeviceReady() {
   keycloak.init({ onLoad: 'login-required', flow: 'implicit' })
   .success(function() {
     // Create a custom sync handler, include Authorization header with token.
-    var keycloakCloudHandler = cloudHandlerUtil.buildSyncCloudHandler(syncConfig.uri, {
-      cloudPath: '/sync/',
-      headers: [{ name: 'Authorization', value: 'Bearer ' + keycloak.token }]
-    });
+    var keycloakCloudHandler = createCloudHandler(syncConfig.uri + '/sync/', {
+      headers: { Authorization: 'Bearer ' + keycloak.token }
+    }, $http);
     // Update the cloud handler for sync, tokens will be sent from now on.
     fhSync.setCloudHandler(keycloakCloudHandler);
   })
@@ -39,12 +46,6 @@ function onDeviceReady() {
     alert('Failed to initialize Keycloak. Please try again.');
   });
 }
-
-var angular = require("angular");
-require("angular-animate");
-require("angular-ui-router");
-require("ionic-scripts");
-require("angular-sanitize");
 
 angular
 .module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services'])
