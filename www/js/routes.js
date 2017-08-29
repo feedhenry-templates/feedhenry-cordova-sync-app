@@ -1,7 +1,6 @@
 angular.module('app.routes', [])
 
 .config(function($stateProvider, $urlRouterProvider) {
-
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
@@ -23,6 +22,16 @@ angular.module('app.routes', [])
         'detail': {
           templateUrl: 'templates/detail.html',
           controller: 'editCtrl'
+        }
+      }
+    })
+
+    .state('tabs.profile', {
+      url: '/profile',
+      views: {
+        profile: {
+          templateUrl: 'templates/profile.html',
+          controller: 'profileCtrl'
         }
       }
     })

@@ -1,7 +1,11 @@
 angular.module('app.services', ['app'])
 
-.factory('sync', ['$q', '$rootScope', 'fhSync', 'fhSyncConfig', 'moment', function($q, $rootScope, fhSync, fhSyncConfig, moment) {
-  var datasetId = "myShoppingList";
+/**
+ * A service that wraps the sync framework. Allows for the basic CRUD
+ * operations to be performed.
+ */
+.factory('SyncService', ['$q', '$rootScope', 'fhSync', 'fhSyncConfig', 'moment', function($q, $rootScope, fhSync, fhSyncConfig, moment) {
+  var datasetId = 'myShoppingList';
 
   function unwrapList(r) {
     var result = [];
@@ -91,5 +95,42 @@ angular.module('app.services', ['app'])
       });
     }
   };
+}])
+
+/**
+ * A service to perform authorization in the app based on Keycloak roles for
+ * the logged-in user. Perform a check on the current user, ensure they have
+ * the required role. If not, return an error in the callback.
+ */
+.factory('AuthService', ['$q', '$state', '$rootScope', 'keycloak', 'moment', function($q, $state, $rootScope, keycloak, moment) {
+  return {
+    guard: function(requiredRole, cb) {
+      var error = new Error('Insufficient permissions. Required permissions: ' + requiredRole);
+      keycloak.hasRealmRole(requiredRole) ? cb() : cb(error);
+    },
+    getKeycloakInstance: function() {
+      return keycloak;
+    }
+  };
+}])
+
+/**
+ * A service to create notifications in an app. The way this is done changes
+ * dependending on whether in browser on on device.
+ *
+ * On device we will utilise the Cordova plugin. This will perform alerts
+ * based on the platform.
+ *
+ * On browser use a basic JavaScript alert.
+ */
+.factory('AlertService', [function() {
+  return {
+    alert: function(message) {
+      if(navigator.notification && navigator.notification.alert) {
+        return navigator.notification.alert(message);
+      }
+      alert(message);
+    }
+  }
 }]);
 
