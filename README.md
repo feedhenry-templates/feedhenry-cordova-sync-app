@@ -16,5 +16,12 @@ This can be used in conjunction with the [FeedHenry Sync Server](https://github.
 
 ### On a device
 
-1. Modify the `hostname` value in `sync-config.json` to point to an accessible sync server.
-2. Follow [Cordova documentation](https://cordova.apache.org/docs/en/2.7.0/guide/command-line/).
+1. Modify the `uri` value in `sync-config.json` to point to an accessible sync server.
+2. Follow [Cordova documentation](https://cordova.apache.org/docs/en/latest/guide/cli/index.html#add-platforms) for building the app.
+
+## Troubleshooting
+
+### Synchronization doesn't work
+
+1. Make sure your sync server is up and running. "OK" response should be received upon sending `GET` request to URI specified in `sync-config.json`.
+2. Run `npm install` (just `grunt browserify` might be sufficient) and re-build the app (re-run `grunt serve` if working locally).
