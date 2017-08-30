@@ -24,6 +24,7 @@ node(platform) {
     }
 
     stage("Prepare") {
+        sh "npm install"
         sh "cordova platform rm ${platform}"
         sh "cordova platform add ${platform}"
         sh "cordova prepare ${platform}"
