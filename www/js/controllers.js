@@ -8,7 +8,7 @@ angular.module('app.controllers', [])
   });
 
   $scope.delete = function (item) {
-    AuthService.guard('user:posts:delete', function (err) {
+    AuthService.canI('sync_user', function (err) {
       if (err) {
         return AlertService.alert(err.message);
       }
@@ -38,7 +38,7 @@ angular.module('app.controllers', [])
 
 .controller('editCtrl', function ($state, $stateParams, $location, $scope, SyncService, AuthService, AlertService) {
   if ($stateParams.id) {
-    AuthService.guard('user:posts:update', function (err) {
+    AuthService.canI('sync_user', function (err) {
       if (err) {
         $location.path('/tabs/main');
         return AlertService.alert(err.message);
@@ -49,7 +49,7 @@ angular.module('app.controllers', [])
       $scope.title = 'Edit';
     });
   } else {
-    AuthService.guard('user:posts:create', function (err) {
+    AuthService.canI('sync_user', function (err) {
       if (err) {
         $location.path('/tabs/main');
       }
@@ -58,7 +58,7 @@ angular.module('app.controllers', [])
   }
 
   $scope.new = function () {
-    AuthService.guard('user:posts:create', function (err) {
+    AuthService.canI('sync_user', function (err) {
       if (err) {
         return AlertService.alert(err.message);
       }

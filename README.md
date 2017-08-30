@@ -23,7 +23,6 @@ Follow the instructions at the sync server repository https://github.com/feedhen
 2. Follow [Cordova documentation](https://cordova.apache.org/docs/en/2.7.0/guide/command-line/).
 
 ### Log in to the app
-Two users will be created `areader` and `awriter`. Both have the password `123`.
-`areader` will not be able to perform any modifications to the dataset and will
-be given alerts when trying to do so.
-`awriter` has full access to the dataset.
+A user will exist with the credentials `awriter`, `123`. Once logged in sync
+actions will be able to be performed and the users profile will be able to be
+used.

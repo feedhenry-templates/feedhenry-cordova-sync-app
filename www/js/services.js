@@ -104,7 +104,7 @@ angular.module('app.services', ['app'])
  */
 .factory('AuthService', ['$q', '$state', '$rootScope', 'keycloak', 'moment', function($q, $state, $rootScope, keycloak, moment) {
   return {
-    guard: function(requiredRole, cb) {
+    canI: function(requiredRole, cb) {
       var error = new Error('Insufficient permissions. Required permissions: ' + requiredRole);
       keycloak.hasRealmRole(requiredRole) ? cb() : cb(error);
     },
