@@ -108,9 +108,9 @@ angular.module('app.services', ['app'])
       var error = new Error('Insufficient permissions. Required permissions: ' + requiredRole);
       keycloak.hasRealmRole(requiredRole) ? cb() : cb(error);
     },
-    getKeycloakInstance: function() {
-      return keycloak;
-    }
+    login: keycloak.login,
+    loadUserProfile: keycloak.loadUserProfile,
+    logout: keycloak.logout
   };
 }])
 

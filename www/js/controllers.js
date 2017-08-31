@@ -1,83 +1,89 @@
 angular.module('app.controllers', [])
 
-.controller('mainCtrl', function ($rootScope, $scope, SyncService, AuthService, AlertService) {
-  SyncService.init();
-  $rootScope.$on('sync', function (event, list) {
-    $scope.list = list;
-    $scope.$apply();
-  });
-
-  $scope.delete = function (item) {
-    AuthService.canI('sync_user', function (err) {
-      if (err) {
-        return AlertService.alert(err.message);
-      }
-      SyncService.deleteItem(item);
+  /**
+   * Controller for the main view, for listing the records.
+   */
+  .controller('mainCtrl', function ($rootScope, $scope, SyncService, AuthService, AlertService) {
+    SyncService.init();
+    $rootScope.$on('sync', function (event, list) {
+      $scope.list = list;
+      $scope.$apply();
     });
-  };
-})
 
-/**
- * Controller for the /tabs/profile route.
- */
-.controller('profileCtrl', function ($state, $stateParams, $location, $scope, SyncService, AuthService, AlertService) {
-  $scope.logout = function() {
-    AuthService.getKeycloakInstance().logout();
-  }
+    $scope.delete = function (item) {
+      AuthService.canI('sync_user', function (err) {
+        if (err) {
+          return AlertService.alert(err.message);
+        }
+        SyncService.deleteItem(item);
+      });
+    };
+  })
 
-  $scope.logout = function() {
-    AuthService.getKeycloakInstance().logout();
-  }
+  /**
+   * Controller for the /tabs/profile route.
+   */
+  .controller('profileCtrl', function ($state, $stateParams, $location, $scope, SyncService, AuthService, AlertService) {
+    $scope.logout = function () {
+      AuthService.logout();
+    }
 
-  $scope.title = 'My Profile';
-  AuthService.getKeycloakInstance().loadUserProfile().success(function(profile) {
-    $scope.profile = profile;
-    $scope.$apply();
-  });
-})
+    // Run on view init.
+    $scope.title = 'My Profile';
+    AuthService.loadUserProfile().success(function (profile) {
+      $scope.profile = profile;
+      $scope.$apply();
+    });
+  })
 
-.controller('editCtrl', function ($state, $stateParams, $location, $scope, SyncService, AuthService, AlertService) {
-  if ($stateParams.id) {
-    AuthService.canI('sync_user', function (err) {
-      if (err) {
-        $location.path('/tabs/main');
-        return AlertService.alert(err.message);
+  /**
+   * Controller for the detail view, for both creating and editing records.
+   */
+  .controller('editCtrl', function ($state, $stateParams, $location, $scope, SyncService, AuthService, AlertService) {
+    $scope.save = function (item) {
+      function navigate() {
+        $state.go('tabs.main');
       }
+      if (item.id) {
+        return SyncService.update(item).then(navigate);
+      }
+      SyncService.save(item).then(navigate);
+    };
+
+    // Run on view init.
+    if ($stateParams.id) {
       SyncService.getItem($stateParams.id).then(function (item) {
         $scope.item = item;
       });
       $scope.title = 'Edit';
-    });
-  } else {
-    AuthService.canI('sync_user', function (err) {
-      if (err) {
-        $location.path('/tabs/main');
-      }
-      $scope.title = 'New';
-    });
-  }
-
-  $scope.new = function () {
-    AuthService.canI('sync_user', function (err) {
-      if (err) {
-        return AlertService.alert(err.message);
-      }
+    } else {
       $scope.item = {};
-      $location.path('/tabs/detail/');
-    });
-  };
-
-  $scope.profile = function () {
-    $location.path('/tabs/profile');
-  };
-
-  $scope.save = function (item) {
-    function navigate() {
-      $state.go('tabs.main');
+      $scope.title = 'New';
     }
-    if (item.id) {
-      return SyncService.update(item).then(navigate);
+  })
+
+  /**
+   * Controller used to change views in the app.
+   */
+  .controller('tabsCtrl', function($location, $scope, AuthService, AlertService) {
+    function changeTab(requiredRole, path) {
+      AuthService.canI(requiredRole, function (err) {
+        if (err) {
+          return AlertService.alert(err.message);
+        }
+        return $location.path(path);
+      });
     }
-    SyncService.save(item).then(navigate);
-  };
-});
+
+    $scope.list = function() {
+      changeTab('sync_user', '/tabs/main');
+    };
+
+    $scope.new = function() {
+      changeTab('sync_user', '/tabs/detail/');
+    };
+
+    $scope.profile = function() {
+      changeTab('sync_user', '/tabs/profile');
+    }
+  });

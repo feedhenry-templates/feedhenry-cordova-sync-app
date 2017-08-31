@@ -76243,6 +76243,7 @@ require("angular-ui-router");
 require("ionic-scripts");
 require("angular-sanitize");
 
+// Use injector to get the $http module from angular, used for web handler.
 $http = angular.injector(["ng"]).get("$http");
 
 /**
@@ -76254,7 +76255,7 @@ $http = angular.injector(["ng"]).get("$http");
  * an app is running it will not have a http-like url scheme. We can use this
  * to detect whether we should wait for 'deviceready' or not.
  */
-var isApp = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+var isApp = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
 if (isApp) {
   document.addEventListener("deviceready", onDeviceReady, false);
 } else {
@@ -76267,57 +76268,67 @@ if (isApp) {
  * framework by creating a custom cloud handler.
  */
 function onDeviceReady() {
-  keycloak.init({ onLoad: 'login-required', flow: 'implicit' })
-  .success(function() {
-    // Create a custom sync handler, include Authorization header with token.
-    var keycloakCloudHandler = createCloudHandler(syncConfig.uri + '/sync/', {
-      headers: { Authorization: 'Bearer ' + keycloak.token }
-    }, $http);
-    // Update the cloud handler for sync, tokens will be sent from now on.
-    fhSync.setCloudHandler(keycloakCloudHandler);
-  })
-  .error(function() {
-    alert('Failed to initialize Keycloak. Please try again.');
-  });
+  keycloak.init({
+      onLoad: 'login-required',
+      flow: 'implicit'
+    })
+    .success(function () {
+      // Create a custom sync handler, include Authorization header with token.
+      var keycloakCloudHandler = createCloudHandler(syncConfig.uri + '/sync/', {
+        headers: {
+          Authorization: 'Bearer ' + keycloak.token
+        }
+      }, $http, function (err, res, cb) {
+        if (err) {
+          return err.status === 403 ? keycloak.logout() : cb();
+        }
+        return cb();
+      });
+      // Update the cloud handler for sync, tokens will be sent from now on.
+      fhSync.setCloudHandler(keycloakCloudHandler);
+    })
+    .error(function () {
+      alert('Failed to initialize Keycloak. Please try again.');
+    });
 }
 
 angular
-.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services'])
-.constant('fhSync', fhSync)
-.constant('fhSyncConfig', syncConfig)
-.constant('keycloak', keycloak)
-.constant('moment', require("moment"))
-.config(['$qProvider', function($qProvider) {
-  $qProvider.errorOnUnhandledRejections(false);
-}])
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if(window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if(window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
+  .module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services'])
+  .constant('fhSync', fhSync)
+  .constant('fhSyncConfig', syncConfig)
+  .constant('keycloak', keycloak)
+  .constant('moment', require("moment"))
+  .config(['$qProvider', function ($qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
+  }])
+  .run(function ($ionicPlatform) {
+    $ionicPlatform.ready(function () {
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // for form inputs)
+      if (window.cordova && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      }
+      if (window.StatusBar) {
+        // org.apache.cordova.statusbar required
+        StatusBar.styleDefault();
+      }
+    });
   });
-});
 
 },{"../../config/keycloak-config.json":1,"../../config/sync-config.json":2,"./keycloak/cloud-handler":16,"angular":9,"angular-animate":4,"angular-sanitize":6,"angular-ui-router":7,"fh-sync-js":26,"ionic-scripts":10,"keycloak-js":13,"moment":14}],16:[function(require,module,exports){
 /**
  * We need a custom cloud handler for fh-sync-js to allow us to append the
  * Authorization header that Keycloak provides.
  */
-module.exports = function(cloudUrl, options, $http) {
+module.exports = function(cloudUrl, options, $http, cb) {
   return function (params, success, failure) {
     var url = cloudUrl + params.dataset_id;
     var headers = (options.headers || {});
     $http.post(url, params.req, options)
       .then(function (res) {
-        success(res.data);
+        return cb(null, res, success.bind(null, res.data));
       }, function (err) {
-        failure(err.data);
+        return cb(err, null, failure.bind(null, err.data));
       });
   }
 }

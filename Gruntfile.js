@@ -90,10 +90,9 @@ module.exports = function (grunt) {
     if (target === 'local') {
       var conn = 'http://' + grunt.config.get('connect.options.hostname') + ':' +
         grunt.config.get('connect.options.port');
-      var url = grunt.option('url') || grunt.config.get('app.default_local_server_url');
-      grunt.config.set('app.url', conn + '/?url=' + url);
+      //var url = grunt.option('url') || grunt.config.get('app.default_local_server_url');
+      grunt.config.set('app.url', conn);
     } else {
-      // open with no url passed to fh-js-sdk
       grunt.config.set('connect.livereload.options.open', true);
     }
 
