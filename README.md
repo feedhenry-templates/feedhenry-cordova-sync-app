@@ -4,7 +4,7 @@
 
 A basic list application that uses the FeedHenry data synchronisation framework.
 
-This can be used in conjunction with the [FeedHenry Sync Server](https://github.com/feedhenry/fh-sync-server).
+This can be used in conjunction with the [FeedHenry Sync Server](https://github.com/feedhenry/fh-sync-server). The [fh-sync-js](https://github.com/feedhenry/fh-sync-js) library is used to connect to FeedHenry Sync Server.
 
 ## Running the app
 
