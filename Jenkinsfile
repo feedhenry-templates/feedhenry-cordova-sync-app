@@ -33,6 +33,7 @@ node(platform) {
         sh "cordova platform rm ${platform}"
         sh "cordova platform add ${platform}"
         sh "cordova prepare ${platform}"
+        sh 'rm -rf ./node_modules'
     }
 
     stage("Build") {
