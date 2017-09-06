@@ -23,6 +23,12 @@ BUNDLE_ID = "org.feedhenry.dart.sync.cordova"
 OUTPUT_FILE_NAME="${PROJECT_NAME}-${BUILD_CONFIG}.ipa"
 SDK = "iphoneos"
 
+if (BUILD_CONFIG.toLowerCase() == "debug") {
+    OSX_BUILD_CONFIG = "Debug"
+} else if(BUILD_CONFIG.toLowerCase() == "release" || BUILD_CONFIG.toLowerCase() == "distribution") {
+    OSX_BUILD_CONFIG = "Release"
+}
+
 node(platform) {
     stage("Checkout") {
         checkout scm
