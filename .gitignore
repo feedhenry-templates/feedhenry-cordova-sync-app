@@ -4,17 +4,18 @@
 .settings
 *~
 .sass-cache
- 
+
 # Mac
 .DS_Store
- 
+
 # Node
 npm-debug.log
 /node_modules
- 
+
 # Cordova
 /platforms
 /plugins
- 
+/www/main.js
+
 # res
 resources/signing

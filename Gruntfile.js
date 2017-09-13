@@ -93,7 +93,6 @@ module.exports = function (grunt) {
       var url = grunt.option('url') || grunt.config.get('app.default_local_server_url');
       grunt.config.set('app.url', conn + '/?url=' + url);
     } else {
-      // open with no url passed to fh-js-sdk
       grunt.config.set('connect.livereload.options.open', true);
     }
 
