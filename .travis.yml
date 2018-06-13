@@ -5,8 +5,9 @@ services:
   - mongodb
   - docker
 node_js:
-  - "0.10"
-  - "4.4.3"
+  - "4"
+  - "6"
+  - "8"
 before_install:
   - npm install fh-build -g
   - fh-build template
